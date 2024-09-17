@@ -58,16 +58,31 @@ dcl-proc assertEqual_string export;
   end-pi;
 
   dcl-s msg like(msgText_t);
+  dcl-s expected_local like(assertString_t);
+  dcl-s actual_local   like(assertString_t);
+
+  expected_local = expected;
+  actual_local = actual;
+
+  if (expected_local = *on or expected_local = *off)
+      and %len(expected_local) = %len(expected_local:*max);
+    %len(expected_local) = 1;
+  endif;
+
+  if (actual_local = *on or actual_local = *off)
+      and %len(actual_local) = %len(actual_local:*max);
+    %len(actual_local) = 1;
+  endif;
 
   if (%parms() >= %parmnum(message) and %addr(message) <> *NULL);
     msg = message;
   else;
     msg = msg
-        + 'Expected ' + addQuotes(%trimr(expected)) + ','
-        + ' but was ' + addQuotes(%trimr(actual)) + '.';
+        + 'Expected ' + addQuotes(%trimr(expected_local)) + ','
+        + ' but was ' + addQuotes(%trimr(actual_local)) + '.';
   endif;
 
-  doAssert(expected = actual: msg
+  doAssert(expected_local = actual_local: msg
            : ONE_CALL_STK_LVL_ABOVE: %proc());
 
 end-proc;

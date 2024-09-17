@@ -477,6 +477,43 @@
       /end-free
      P                 e
 
+     PtestAssertEqual_ind...
+     P                 b                   export
+     D                 pi
+
+     D assertFailEvtLong...
+     D                 ds                  likeds(assertFailEvtLong_t)
+      /free
+        // Test equality
+        assertEqual(*on : *on );
+        aEqual( EMPTY_ASSERT_FAIL_EVT : getAssertFailEvt() );
+
+        // Test unequality without assertion message
+        monitor;
+          assertEqual( *on : *off );
+          fail('Expected the asssertion to fail.');
+        on-error;
+          assertFailEvtLong = getAssertFailEvtLong();
+          assert(assertFailEvtLong.msg =
+                 'Expected ''1'', but was ''0''.'
+                 : 'Error messages does not match expected value.');
+        endmon;
+
+        // Test unequality with assertion message
+        monitor;
+          assertEqual( *on :
+                       *off :
+                       'Indicator values do not match');
+          fail('Expected the asssertion to fail.');
+        on-error;
+          assertFailEvtLong = getAssertFailEvtLong();
+          assert(assertFailEvtLong.msg =
+                 'Indicator values do not match'
+                 : 'Error messages does not match expected value.');
+        endmon;
+
+      /end-free
+     P                 e
 
      PtestAssertEqual_string...
      P                 b                   export
