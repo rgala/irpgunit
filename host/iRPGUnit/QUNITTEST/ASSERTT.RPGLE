@@ -483,6 +483,8 @@
 
      D assertFailEvtLong...
      D                 ds                  likeds(assertFailEvtLong_t)
+     D on              s               N   inz(*on)
+     D off             s               N   inz(*off)
       /free
         // Test equality
         assertEqual(*on : *on );
@@ -509,6 +511,47 @@
           assertFailEvtLong = getAssertFailEvtLong();
           assert(assertFailEvtLong.msg =
                  'Indicator values do not match'
+                 : 'Error messages does not match expected value.');
+        endmon;
+
+        // Test equality
+        assertEqual( on : on );
+        aEqual( EMPTY_ASSERT_FAIL_EVT : getAssertFailEvt() );
+
+        // Test equality
+        assertEqual( off : off );
+        aEqual( EMPTY_ASSERT_FAIL_EVT : getAssertFailEvt() );
+
+       // Test unequality without assertion message
+        monitor;
+          assertEqual( on : *off );
+          fail('Expected the asssertion to fail.');
+        on-error;
+          assertFailEvtLong = getAssertFailEvtLong();
+          assert(assertFailEvtLong.msg =
+                 'Expected ''1'', but was ''0''.'
+                 : 'Error messages does not match expected value.');
+        endmon;
+
+       // Test unequality without assertion message
+        monitor;
+          assertEqual( on : off );
+          fail('Expected the asssertion to fail.');
+        on-error;
+          assertFailEvtLong = getAssertFailEvtLong();
+          assert(assertFailEvtLong.msg =
+                 'Expected ''1'', but was ''0''.'
+                 : 'Error messages does not match expected value.');
+        endmon;
+
+        // Test unequality without assertion message
+        monitor;
+          assertEqual( *on : off );
+          fail('Expected the asssertion to fail.');
+        on-error;
+          assertFailEvtLong = getAssertFailEvtLong();
+          assert(assertFailEvtLong.msg =
+                 'Expected ''1'', but was ''0''.'
                  : 'Error messages does not match expected value.');
         endmon;
 
